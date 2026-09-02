@@ -4,27 +4,155 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Clean 24 — уборка после ремонта в Бишкеке</title>
-<meta name="description" content="Clean 24 — профессиональная уборка после ремонта в Бишкеке. Бесплатный замер, выезд в день обращения.">
+<meta name="description" content="Clean 24 — уборка после ремонта, генеральная и поддерживающая уборка в Бишкеке. Цены от 90 сом/м², бесплатный замер, гарантия 24 часа. Ежедневно 9:00–20:00.">
 <style>
+  :root {
+    --accent: #0aa2c0;
+    --accent-dark: #0b8fa9;
+    --accent-soft: #e8f7fb;
+    --ink: #0f2233;
+    --muted: #46626f;
+    --card: #ffffff;
+    --line: rgba(15, 34, 51, 0.09);
+    --radius: 18px;
+    --maxw: 1080px;
+    --header-h: 68px;
+    --shadow: 0 4px 18px rgba(15, 34, 51, 0.06);
+  }
+
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
 
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + 12px);
+  }
+
   body {
-    min-height: 100dvh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    color: #0f2233;
+    color: var(--ink);
     background: linear-gradient(160deg, #f2fbfd 0%, #e4f2f8 100%);
+    background-attachment: fixed;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
   }
 
-  main {
-    max-width: 620px;
-    text-align: center;
+  .wrap {
+    width: 100%;
+    max-width: var(--maxw);
+    margin-inline: auto;
+    padding-inline: 20px;
   }
+
+  /* ---------- Кнопка ---------- */
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 56px;
+    padding: 14px 32px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-size: clamp(1rem, 3.2vw, 1.1rem);
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 10px 26px rgba(10, 162, 192, 0.32);
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  }
+
+  .cta:hover {
+    background: var(--accent-dark);
+    box-shadow: 0 12px 30px rgba(10, 162, 192, 0.4);
+  }
+
+  .cta:active {
+    transform: translateY(2px);
+    box-shadow: 0 6px 16px rgba(10, 162, 192, 0.3);
+  }
+
+  .cta--sm {
+    min-height: 42px;
+    padding: 8px 20px;
+    font-size: 0.95rem;
+    box-shadow: none;
+  }
+
+  .cta--sm:hover { box-shadow: none; }
+
+  .cta--invert {
+    background: #fff;
+    color: var(--accent-dark);
+    box-shadow: 0 10px 30px rgba(4, 62, 76, 0.25);
+  }
+
+  .cta--invert:hover {
+    background: #f3feff;
+    box-shadow: 0 12px 34px rgba(4, 62, 76, 0.3);
+  }
+
+  /* ---------- Шапка ---------- */
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    background: rgba(244, 251, 253, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  header .wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .logo span { color: var(--accent); }
+
+  nav {
+    margin-left: auto;
+    display: flex;
+    gap: 26px;
+  }
+
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.98rem;
+    transition: color 0.2s;
+  }
+
+  nav a:hover { color: var(--accent); }
+
+  header .cta--sm { margin-left: 20px; }
+
+  /* ---------- Первый экран ---------- */
+
+  .hero {
+    min-height: calc(100dvh - var(--header-h));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 56px 0;
+  }
+
+  .hero-inner { max-width: 640px; margin-inline: auto; }
 
   h1 {
     margin: 0;
@@ -34,48 +162,386 @@
     line-height: 1.05;
   }
 
-  h1 span { color: #0aa2c0; }
+  h1 span { color: var(--accent); }
 
-  p {
-    margin: 20px auto 40px;
+  .lead {
+    margin: 20px auto 36px;
     max-width: 34ch;
     font-size: clamp(1.05rem, 3.6vw, 1.3rem);
-    line-height: 1.5;
-    color: #46626f;
+    color: var(--muted);
   }
 
-  a.cta {
-    display: inline-flex;
+  .hero-note {
+    margin: 20px 0 0;
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
+
+  /* ---------- Секции ---------- */
+
+  section { padding: clamp(56px, 9vw, 96px) 0; }
+
+  .section--white {
+    background: #fff;
+    border-block: 1px solid var(--line);
+  }
+
+  h2 {
+    margin: 0 0 10px;
+    font-size: clamp(1.75rem, 6vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .section-sub {
+    margin: 0 0 40px;
+    max-width: 52ch;
+    color: var(--muted);
+    font-size: clamp(1rem, 3.2vw, 1.1rem);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px 26px;
+    box-shadow: var(--shadow);
+  }
+
+  .section--white .card { background: #fbfeff; }
+
+  .card h3 {
+    margin: 0 0 10px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.98rem;
+  }
+
+  .badge {
+    display: inline-block;
+    margin-bottom: 14px;
+    padding: 5px 13px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- Цены ---------- */
+
+  .price {
+    margin: 16px 0 6px;
+    font-size: clamp(1.5rem, 5.5vw, 1.9rem);
+    font-weight: 800;
+    color: var(--accent-dark);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .price small {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .price-note {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .callout {
+    margin-top: 24px;
+    padding: 22px 26px;
+    border-radius: var(--radius);
+    background: var(--accent-soft);
+    border: 1px solid rgba(10, 162, 192, 0.18);
+  }
+
+  .callout p { margin: 0; color: var(--muted); }
+  .callout p + p { margin-top: 8px; }
+  .callout strong { color: var(--accent-dark); }
+
+  /* ---------- Почему мы ---------- */
+
+  .reasons {
+    display: grid;
+    /* min 420px => ровно 2 колонки на десктопе (2×2) и одна на телефоне */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: 26px 34px;
+  }
+
+  .reason { display: flex; gap: 18px; }
+
+  .reason .num {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 60px;
-    padding: 16px 34px;
-    border-radius: 999px;
-    background: #0aa2c0;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    font-weight: 800;
+    font-size: 1.05rem;
+  }
+
+  .reason h3 { margin: 8px 0 6px; font-size: 1.1rem; font-weight: 700; }
+  .reason p { margin: 0; color: var(--muted); font-size: 0.98rem; }
+
+  /* ---------- Отзывы ---------- */
+
+  .quote {
+    margin: 0 0 18px;
+    font-size: 1.02rem;
+    line-height: 1.6;
+  }
+
+  .who {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .who small {
+    display: block;
+    font-weight: 400;
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin-top: 2px;
+  }
+
+  /* ---------- Финальный призыв ---------- */
+
+  .final {
+    background: linear-gradient(150deg, var(--accent) 0%, #0b7f99 100%);
     color: #fff;
+    text-align: center;
+  }
+
+  .final h2 { color: #fff; }
+
+  .final p {
+    margin: 0 auto 36px;
+    max-width: 44ch;
+    color: rgba(255, 255, 255, 0.9);
     font-size: clamp(1rem, 3.4vw, 1.15rem);
-    font-weight: 600;
-    text-decoration: none;
-    box-shadow: 0 10px 26px rgba(10, 162, 192, 0.32);
-    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
   }
 
-  a.cta:hover {
-    background: #0b8fa9;
-    box-shadow: 0 12px 30px rgba(10, 162, 192, 0.4);
+  .final-note {
+    margin: 22px 0 0;
+    font-size: 0.92rem;
+    color: rgba(255, 255, 255, 0.78);
   }
 
-  a.cta:active {
-    transform: translateY(2px);
-    box-shadow: 0 6px 16px rgba(10, 162, 192, 0.3);
+  /* ---------- Футер ---------- */
+
+  footer {
+    padding: 34px 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.92rem;
+    background: #fff;
+    border-top: 1px solid var(--line);
+  }
+
+  footer p { margin: 0; }
+  footer p + p { margin-top: 6px; }
+
+  footer a { color: var(--accent-dark); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ---------- Адаптив ---------- */
+
+  @media (max-width: 640px) {
+    nav { display: none; }
+    header .cta--sm { margin-left: auto; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
   }
 </style>
 </head>
 <body>
-  <main>
-    <h1>Clean <span>24</span></h1>
-    <p>Уборка после ремонта в Бишкеке. Сдаём объект под ключ — вам остаётся только заехать.</p>
-    <a class="cta" href="https://t.me/bishkek_clean24_bot" target="_blank" rel="noopener">Записаться на бесплатный замер</a>
-  </main>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#top">Clean <span>24</span></a>
+    <nav>
+      <a href="#services">Услуги</a>
+      <a href="#prices">Цены</a>
+      <a href="#reviews">Отзывы</a>
+    </nav>
+    <a class="cta cta--sm" href="https://t.me/bishkek_clean24_bot" target="_blank" rel="noopener">Записаться</a>
+  </div>
+</header>
+
+<!-- 1. Первый экран -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-inner">
+      <h1>Clean <span>24</span></h1>
+      <p class="lead">Уборка после ремонта в Бишкеке. Сдаём объект под ключ — вам остаётся только заехать.</p>
+      <a class="cta" href="https://t.me/bishkek_clean24_bot" target="_blank" rel="noopener">Записаться на бесплатный замер</a>
+      <p class="hero-note">Выезжаем по всему Бишкеку. Замер и расчёт — бесплатно, без обязательств.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. Услуги -->
+<section class="section--white" id="services" aria-labelledby="services-title">
+  <div class="wrap">
+    <h2 id="services-title">Услуги</h2>
+    <p class="section-sub">Убираем квартиры, дома и коммерческие помещения. Если не уверены, какая уборка вам нужна, — подскажем на замере.</p>
+    <div class="grid">
+      <article class="card">
+        <span class="badge">Наша специализация</span>
+        <h3>Уборка после ремонта</h3>
+        <p>Снимаем строительную пыль, следы цемента, побелки, краски и клея. Моем окна, рамы и подоконники, отчищаем сантехнику и плитку, выносим строительный мусор. После нас в помещение можно завозить мебель.</p>
+      </article>
+      <article class="card">
+        <h3>Генеральная уборка</h3>
+        <p>Глубокая уборка всей квартиры: кухня и техника внутри, санузел до блеска, окна, батареи, плинтусы, труднодоступные места. Подходит перед переездом, после долгого отсутствия или к большому событию.</p>
+      </article>
+      <article class="card">
+        <h3>Поддерживающая уборка / абонемент</h3>
+        <p>Регулярная уборка раз в неделю или две: полы, пыль, кухня, санузел, вынос мусора. Приезжает одна и та же бригада — вам не нужно каждый раз объяснять всё заново.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Цены -->
+<section id="prices" aria-labelledby="prices-title">
+  <div class="wrap">
+    <h2 id="prices-title">Цены</h2>
+    <p class="section-sub">Стоимость зависит от площади, степени загрязнения и объёма работ. Ниже — рабочие вилки, по которым мы считаем.</p>
+    <div class="grid">
+      <article class="card">
+        <h3>После ремонта</h3>
+        <p class="price">120–170 <small>сом/м²</small></p>
+        <p class="price-note">Минимальный заказ — 7000 сом</p>
+      </article>
+      <article class="card">
+        <h3>Генеральная</h3>
+        <p class="price">90–130 <small>сом/м²</small></p>
+        <p class="price-note">Минимальный заказ — 4500 сом</p>
+      </article>
+      <article class="card">
+        <h3>Поддерживающая</h3>
+        <p class="price">3200–4500 <small>сом</small></p>
+        <p class="price-note">За квартиру до 50 м²</p>
+      </article>
+    </div>
+    <div class="callout">
+      <p>По абонементу — <strong>скидка 10–15%</strong> в зависимости от частоты уборок.</p>
+      <p>Точную цену внутри вилки называем после бесплатного замера — и она уже не меняется. Никаких доплат «по факту» в конце работы.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. Почему Clean 24 -->
+<section class="section--white" aria-labelledby="why-title">
+  <div class="wrap">
+    <h2 id="why-title">Почему Clean 24</h2>
+    <p class="section-sub">Четыре вещи, из-за которых к нам возвращаются и советуют знакомым.</p>
+    <div class="reasons">
+      <div class="reason">
+        <div class="num" aria-hidden="true">1</div>
+        <div>
+          <h3>Гарантия 24 часа</h3>
+          <p>Если после уборки вы нашли недочёт — вернёмся в течение 24 часов и доделаем бесплатно. Без споров и лишних вопросов.</p>
+        </div>
+      </div>
+      <div class="reason">
+        <div class="num" aria-hidden="true">2</div>
+        <div>
+          <h3>Фото до и после</h3>
+          <p>Присылаем снимки каждого объекта. Вы видите результат, даже если не смогли приехать и принять работу лично.</p>
+        </div>
+      </div>
+      <div class="reason">
+        <div class="num" aria-hidden="true">3</div>
+        <div>
+          <h3>Свои средства и оборудование</h3>
+          <p>Приезжаем со своей профессиональной химией, пылесосами и инвентарём. Вам не нужно ничего покупать и готовить к нашему приезду.</p>
+        </div>
+      </div>
+      <div class="reason">
+        <div class="num" aria-hidden="true">4</div>
+        <div>
+          <h3>Ежедневно по Бишкеку</h3>
+          <p>Работаем без выходных с 9:00 до 20:00, включая праздники. Выезжаем во все районы города.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--
+  ================================================================
+  5. ОТЗЫВЫ — ЗАГЛУШКИ!
+  Тексты и имена ниже вымышленные, это только образец вёрстки.
+  ЗАМЕНИТЕ на реальные отзывы клиентов перед публикацией сайта.
+  ================================================================
+-->
+<section id="reviews" aria-labelledby="reviews-title">
+  <div class="wrap">
+    <h2 id="reviews-title">Отзывы</h2>
+    <p class="section-sub">Что говорят клиенты после уборки.</p>
+    <div class="grid">
+      <article class="card">
+        <p class="quote">«Сдали квартиру после капитального ремонта — пыль была везде, даже в шкафах. Бригада приехала вовремя, отработала семь часов и вымыла всё, включая окна. Заехали на следующий день, ничего доубирать не пришлось.»</p>
+        <p class="who">Айгуль<small>Уборка после ремонта, 3 комнаты</small></p>
+      </article>
+      <article class="card">
+        <p class="quote">«Заказывал генеральную перед приездом родителей. Понравилось, что цену назвали сразу после замера и в конце ничего не пересчитывали. Кухню отмыли так, как я сам никогда не смог бы.»</p>
+        <p class="who">Данияр<small>Генеральная уборка, 2 комнаты</small></p>
+      </article>
+      <article class="card">
+        <p class="quote">«Берём уборку раз в две недели по абонементу. Приезжают одни и те же девушки, всё уже знают, объяснять ничего не надо. Один раз забыли протереть балкон — вернулись на следующий день и сделали.»</p>
+        <p class="who">Марина<small>Абонемент, раз в две недели</small></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Финальный призыв -->
+<section class="final" aria-labelledby="final-title">
+  <div class="wrap">
+    <h2 id="final-title">Узнайте стоимость вашей уборки</h2>
+    <p>Напишите нам в Telegram — уточним детали, подберём удобное время и приедем на бесплатный замер. Ни к чему вас не обязывает.</p>
+    <a class="cta cta--invert" href="https://t.me/bishkek_clean24_bot" target="_blank" rel="noopener">Записаться на бесплатный замер</a>
+    <p class="final-note">Отвечаем ежедневно с 9:00 до 20:00</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Clean 24</strong> — уборка после ремонта в Бишкеке</p>
+    <p>Ежедневно 9:00–20:00 · <a href="https://t.me/bishkek_clean24_bot" target="_blank" rel="noopener">Telegram</a></p>
+    <p>© 2026 Clean 24</p>
+  </div>
+</footer>
+
 </body>
 </html>
