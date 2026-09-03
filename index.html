@@ -337,6 +337,95 @@
     margin-top: 2px;
   }
 
+  /* ---------- Форма заявки ---------- */
+
+  button.cta {
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  button.cta[disabled] {
+    opacity: 0.6;
+    cursor: default;
+    transform: none;
+  }
+
+  .form {
+    display: grid;
+    /* min 300px при ширине формы 760px => ровно 2 колонки на десктопе
+       (Имя + Телефон в ряд) и одна на телефоне */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 18px;
+    max-width: 760px;
+  }
+
+  /* Тип уборки, кнопка и статус — всегда во всю ширину формы */
+  .field--wide, .form-foot, .form-status { grid-column: 1 / -1; }
+
+  .field { display: flex; flex-direction: column; gap: 7px; }
+
+  .field label {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .field input, .field select {
+    height: 52px;
+    padding: 0 16px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .field select { cursor: pointer; }
+
+  .field input:focus, .field select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(10, 162, 192, 0.15);
+  }
+
+  .form-foot {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px 20px;
+    margin-top: 4px;
+  }
+
+  .form-foot .privacy {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+
+  .form-status {
+    margin: 0;
+    font-size: 0.98rem;
+    min-height: 1.5em;
+  }
+
+  .form-status:empty { min-height: 0; }
+  .form-status.ok { color: var(--accent-dark); font-weight: 600; }
+  .form-status.err { color: #b4405a; font-weight: 600; }
+  .form-status a { color: inherit; }
+
+  /* Ловушка для ботов: уводим за экран, а не display:none — часть ботов
+     умеет отличать скрытые поля и такие не заполняет. */
+  .trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
   /* ---------- Финальный призыв ---------- */
 
   .final {
@@ -399,6 +488,7 @@
       <a href="#services">Услуги</a>
       <a href="#prices">Цены</a>
       <a href="#reviews">Отзывы</a>
+      <a href="#request">Заявка</a>
     </nav>
     <a class="cta cta--sm" href="https://t.me/bishkek_clean24_bot" target="_blank" rel="noopener">Записаться</a>
   </div>
@@ -535,7 +625,49 @@
   </div>
 </section>
 
-<!-- 6. Финальный призыв -->
+<!-- 6. Форма заявки -->
+<section class="section--white" id="request" aria-labelledby="request-title">
+  <div class="wrap">
+    <h2 id="request-title">Оставьте заявку</h2>
+    <p class="section-sub">Заполните три поля — перезвоним, уточним детали и договоримся о бесплатном замере. Если удобнее в Telegram, кнопка ниже никуда не делась.</p>
+
+    <form class="form" id="request-form" novalidate>
+      <div class="field">
+        <label for="f-name">Как вас зовут</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Айгуль" required>
+      </div>
+
+      <div class="field">
+        <label for="f-phone">Телефон</label>
+        <input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+996 700 123 456" required>
+      </div>
+
+      <div class="field field--wide">
+        <label for="f-service">Какая уборка нужна</label>
+        <select id="f-service" name="service">
+          <option value="Уборка после ремонта">Уборка после ремонта</option>
+          <option value="Генеральная уборка">Генеральная уборка</option>
+          <option value="Поддерживающая уборка">Поддерживающая уборка</option>
+        </select>
+      </div>
+
+      <!-- Ловушка для ботов: живой человек этого поля не видит и не заполнит -->
+      <div class="trap" aria-hidden="true">
+        <label for="f-company">Не заполняйте это поле</label>
+        <input id="f-company" name="company" type="text" tabindex="-1" autocomplete="off">
+      </div>
+
+      <div class="form-foot">
+        <button type="submit" class="cta">Оставить заявку</button>
+        <p class="privacy">Звоним только по делу. Номер никому не передаём.</p>
+      </div>
+
+      <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<!-- 7. Финальный призыв -->
 <section class="final" aria-labelledby="final-title">
   <div class="wrap">
     <h2 id="final-title">Оставьте ремонт нам — а себе оставьте новоселье</h2>
@@ -552,6 +684,86 @@
     <p>© 2026 Clean 24</p>
   </div>
 </footer>
+
+<script>
+(function () {
+  // ▼▼▼ ВСТАВЬТЕ СЮДА ССЫЛКУ ИЗ GOOGLE APPS SCRIPT (заканчивается на /exec) ▼▼▼
+  var SCRIPT_URL = '';
+  // ▲▲▲ Пока строка пустая, форма честно сообщает, что не подключена ▲▲▲
+
+  var TELEGRAM = 'https://t.me/bishkek_clean24_bot';
+  var form = document.getElementById('request-form');
+  var status = document.getElementById('form-status');
+  var button = form.querySelector('button[type="submit"]');
+
+  function say(text, kind) {
+    status.className = 'form-status' + (kind ? ' ' + kind : '');
+    status.textContent = text;
+  }
+
+  function sayTelegram(text) {
+    status.className = 'form-status err';
+    status.textContent = text + ' ';
+    var a = document.createElement('a');
+    a.href = TELEGRAM;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = 'Написать в Telegram';
+    status.appendChild(a);
+  }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    var name = form.name.value.trim();
+    var phone = form.phone.value.trim();
+
+    if (!name || !phone) {
+      say('Пожалуйста, заполните имя и телефон.', 'err');
+      (name ? form.phone : form.name).focus();
+      return;
+    }
+
+    // Ловушка сработала — показываем то же, что и человеку, но никуда не отправляем.
+    if (form.company.value) {
+      say('Спасибо! Мы свяжемся с вами в течение рабочего дня.', 'ok');
+      form.reset();
+      return;
+    }
+
+    if (!SCRIPT_URL) {
+      sayTelegram('Форма пока не подключена — заявка не уйдёт.');
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Отправляем…';
+    say('');
+
+    var body = new URLSearchParams({
+      name: name,
+      phone: phone,
+      service: form.service.value
+    });
+
+    // mode: 'no-cors' — единственный способ достучаться до Apps Script из
+    // браузера без настройки CORS. Обратная сторона: ответ сервера скрыт,
+    // поэтому реальное подтверждение — строка в таблице и письмо на почте.
+    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: body })
+      .then(function () {
+        say('Спасибо! Мы свяжемся с вами в течение рабочего дня.', 'ok');
+        form.reset();
+      })
+      .catch(function () {
+        sayTelegram('Не получилось отправить — проверьте интернет.');
+      })
+      .then(function () {
+        button.disabled = false;
+        button.textContent = 'Оставить заявку';
+      });
+  });
+})();
+</script>
 
 </body>
 </html>
