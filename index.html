@@ -888,16 +888,27 @@
       service: form.service.value
     });
 
-    // mode: 'no-cors' — единственный способ достучаться до Apps Script из
-    // браузера без настройки CORS. Обратная сторона: ответ сервера скрыт,
-    // поэтому реальное подтверждение — строка в таблице и письмо на почте.
-    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: body })
-      .then(function () {
-        form.reset();
-        showDone();
+    // Обычный режим cors: Apps Script отдаёт Access-Control-Allow-Origin,
+    // поэтому ответ читается и мы точно знаем, приняли заявку или нет.
+    // Раньше здесь стоял no-cors — он прятал ответ, и страница показывала
+    // «принято» даже когда заявка на самом деле не доходила.
+    fetch(SCRIPT_URL, { method: 'POST', mode: 'cors', body: body })
+      .then(function (response) { return response.json(); })
+      .then(function (result) {
+        if (result && result.ok) {
+          form.reset();
+          showDone();
+        } else {
+          sayTelegram('Заявка не сохранилась.');
+        }
       })
       .catch(function () {
-        sayTelegram('Не получилось отправить — проверьте интернет.');
+        if (location.protocol === 'file:') {
+          // Частая ловушка при проверке: файл открыли двойным щелчком.
+          sayTelegram('Страница открыта файлом с диска — браузер запрещает отправку. Откройте сайт по адресу http:// или https://.');
+        } else {
+          sayTelegram('Не получилось отправить — проверьте интернет.');
+        }
       })
       .then(function () {
         button.disabled = false;
