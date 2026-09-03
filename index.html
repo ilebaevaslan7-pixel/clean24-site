@@ -360,6 +360,10 @@
     max-width: 760px;
   }
 
+  /* display:grid выше по приоритету, чем встроенный стиль атрибута hidden,
+     поэтому прячем форму явно — иначе она останется видна под панелью. */
+  .form[hidden] { display: none; }
+
   /* Тип уборки, кнопка и статус — всегда во всю ширину формы */
   .field--wide, .form-foot, .form-status { grid-column: 1 / -1; }
 
@@ -415,6 +419,104 @@
   .form-status.ok { color: var(--accent-dark); font-weight: 600; }
   .form-status.err { color: #b4405a; font-weight: 600; }
   .form-status a { color: inherit; }
+
+  /* ---------- Экран «заявка принята» ---------- */
+
+  .form-done {
+    max-width: 760px;
+    padding: 40px 32px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: linear-gradient(160deg, #f6fdfe 0%, var(--accent-soft) 100%);
+    text-align: center;
+  }
+
+  .form-done[hidden] { display: none; }
+
+  .done-mark { width: 96px; height: 96px; margin: 0 auto 6px; }
+
+  .done-ring {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 3;
+    opacity: 0.28;
+  }
+
+  .done-circle {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 170;
+    stroke-dashoffset: 170;
+  }
+
+  .done-check {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+  }
+
+  .form-done h3 {
+    margin: 0 0 10px;
+    font-size: clamp(1.4rem, 4.5vw, 1.8rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .form-done p {
+    margin: 0 auto;
+    max-width: 40ch;
+    color: var(--muted);
+  }
+
+  .done-again {
+    margin-top: 22px;
+    background: none;
+    border: 0;
+    padding: 8px 4px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--accent-dark);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .done-again:hover { color: var(--ink); }
+
+  /* Анимация появления. Класс .is-in вешается из скрипта, чтобы
+     последовательность запускалась в момент показа, а не при загрузке. */
+  .form-done.is-in { animation: done-rise 0.45s ease-out both; }
+  .form-done.is-in .done-circle { animation: done-draw 0.5s ease-out 0.1s both; }
+  .form-done.is-in .done-check  { animation: done-draw 0.35s ease-out 0.5s both; }
+  .form-done.is-in .done-ring   { animation: done-pulse 0.9s ease-out 0.35s both; }
+  .form-done.is-in h3           { animation: done-rise 0.4s ease-out 0.55s both; }
+  .form-done.is-in p            { animation: done-rise 0.4s ease-out 0.68s both; }
+  .form-done.is-in .done-again  { animation: done-rise 0.4s ease-out 0.82s both; }
+
+  @keyframes done-rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  @keyframes done-draw {
+    from { stroke-dashoffset: var(--len, 170); }
+    to   { stroke-dashoffset: 0; }
+  }
+
+  @keyframes done-pulse {
+    0%   { transform: scale(0.75); opacity: 0.5; }
+    100% { transform: scale(1.25); opacity: 0; }
+  }
+
+  .done-ring { transform-origin: 50% 50%; }
+  .done-check { --len: 40; }
 
   /* Ловушка для ботов: уводим за экран, а не display:none — часть ботов
      умеет отличать скрытые поля и такие не заполняет. */
@@ -476,6 +578,14 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     * { transition: none !important; }
+
+    /* Анимации не проигрываем, но итоговое состояние показываем:
+       галочка должна быть дорисована, а не остаться невидимой. */
+    .form-done.is-in,
+    .form-done.is-in * { animation: none !important; }
+    .form-done .done-circle,
+    .form-done .done-check { stroke-dashoffset: 0; }
+    .form-done .done-ring { display: none; }
   }
 </style>
 </head>
@@ -664,6 +774,18 @@
 
       <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
     </form>
+
+    <div class="form-done" id="form-done" role="status" aria-live="polite" hidden>
+      <svg class="done-mark" viewBox="0 0 60 60" aria-hidden="true">
+        <circle class="done-ring" cx="30" cy="30" r="26"></circle>
+        <circle class="done-circle" cx="30" cy="30" r="26"
+                transform="rotate(-90 30 30)"></circle>
+        <path class="done-check" d="M19 30.5 L26.5 38 L41 23"></path>
+      </svg>
+      <h3>Ваша заявка принята</h3>
+      <p>Спасибо! Мы позвоним вам в течение рабочего дня, уточним детали и договоримся о бесплатном замере.</p>
+      <button type="button" class="done-again" id="done-again">Отправить ещё одну заявку</button>
+    </div>
   </div>
 </section>
 
@@ -695,6 +817,26 @@
   var form = document.getElementById('request-form');
   var status = document.getElementById('form-status');
   var button = form.querySelector('button[type="submit"]');
+  var done = document.getElementById('form-done');
+  var again = document.getElementById('done-again');
+
+  // Показываем панель «заявка принята» вместо формы и запускаем анимацию.
+  function showDone() {
+    say('');
+    form.hidden = true;
+    done.hidden = false;
+    done.classList.remove('is-in');
+    void done.offsetWidth; // перезапуск анимации, если заявку шлют повторно
+    done.classList.add('is-in');
+  }
+
+  again.addEventListener('click', function () {
+    done.hidden = true;
+    done.classList.remove('is-in');
+    form.hidden = false;
+    form.reset();
+    form.name.focus();
+  });
 
   function say(text, kind) {
     status.className = 'form-status' + (kind ? ' ' + kind : '');
@@ -726,8 +868,8 @@
 
     // Ловушка сработала — показываем то же, что и человеку, но никуда не отправляем.
     if (form.company.value) {
-      say('Спасибо! Мы свяжемся с вами в течение рабочего дня.', 'ok');
       form.reset();
+      showDone();
       return;
     }
 
@@ -751,8 +893,8 @@
     // поэтому реальное подтверждение — строка в таблице и письмо на почте.
     fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: body })
       .then(function () {
-        say('Спасибо! Мы свяжемся с вами в течение рабочего дня.', 'ok');
         form.reset();
+        showDone();
       })
       .catch(function () {
         sayTelegram('Не получилось отправить — проверьте интернет.');
